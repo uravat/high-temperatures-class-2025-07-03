@@ -118,6 +118,3 @@ ggplot(annual_avg, aes(x = year, y = avg_max)) +
 
 ```
 
-
-
-
