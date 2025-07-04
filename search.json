@@ -1,0 +1,16 @@
+[
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "Inspired by NYT picture of high temperatures over the years, we recreated the seattle plot for Santa Barbara instead."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Daily Max Temperatures in Santa Barbara",
+    "section": "",
+    "text": "We use data for Santa Barbar from 2017 - 205 from the worldmet package. The data comes from global weather stations, providing hourly meteorological observations collected by national meteorological services. \n\n\n\n\n\n\n\n\n\n\n\n\nThis plot shows daily maximum temperatures in Santa Barbara over the year, with colors representing years to visually explore if recent years tend to have higher temperatures. In fact, daily maximmum temperatures seem to be decreasing over the years!"
+  }
+]
