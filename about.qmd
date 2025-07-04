@@ -1,0 +1,5 @@
+---
+title: "About"
+---
+
+Inspired by [NYT](https://www.nytimes.com/interactive/2021/06/29/upshot/portland-seattle-vancouver-weather.html) picture of high temperatures over the years, we recreated the seattle plot for Santa Barbara instead. 

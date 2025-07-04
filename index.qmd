@@ -1,0 +1,123 @@
+---
+title: "Daily Max Temperatures in Santa Barbara"
+execute: 
+    echo: false
+    message: false
+---
+
+<!-- Using R how do I get this data for the image. --> 
+<!-- Console: install the worldnet package --> 
+<!-- Use santa barbara instead code: 998340-99999 --> 
+<!-- get the data into rds file once and for all --> 
+ 
+```{r}
+#| message: false
+library(tidyverse)
+sb_weather <- read_rds("sb_weather.rds")
+```
+
+<!-- Here  is my data, I need to clean it before I can make a plot. Help? -->
+<!-- here’s a clean and focused data wrangling pipeline using tidyverse: --> 
+
+
+```{r}
+#library(dplyr)
+#library(lubridate)
+
+sb_daily <- sb_weather %>%
+  filter(!is.na(air_temp)) %>%                   # remove rows with missing temperature
+  mutate(date = as.Date(date)) %>%               # convert to Date (drop hours)
+  group_by(date) %>%
+  summarize(
+    min_temp = min(air_temp, na.rm = TRUE),
+    max_temp = max(air_temp, na.rm = TRUE)       # daily max temp
+  ) %>%
+  ungroup()
+#glimpse(sb_daily)
+#summary(sb_daily$max_temp)
+```
+
+We use data for Santa Barbar from 2017 - 205 from  the worldmet package. The data comes from global weather stations, providing hourly meteorological observations collected by national meteorological services.
+<!-- here is my data make a simple version of the plot --> 
+
+
+
+<!-- In the original plot each year is put teogether Jan to Dec--> 
+
+
+```{r}
+#| message: false
+# Prepare data
+sb_daily_viz <- sb_daily %>%
+  mutate(
+    doy = yday(date),
+    year = year(date)
+  )
+
+# Get last 3 days for highlighting
+recent_days <- sb_daily_viz %>%
+  filter(date == max(date) | date == max(date) - 1 | date == max(date) - 2)
+
+```
+
+<!-- color the plot from early yeaers to later years to see if the temperatures are increasing. -->
+<!-- Coloring the points by year allows you to visually assess trends—like whether recent years are showing higher temperatures than earlier ones--> 
+
+
+
+
+```{r}
+#| message: false
+ggplot(sb_daily_viz, aes(x = doy, y = max_temp, color = year)) +
+  geom_point(alpha = 0.6, size = 1) +
+  scale_color_gradientn(
+    colors = c("blue", "cyan", "yellow", "orange", "red"),
+    name = "Year"
+  ) +
+  geom_smooth(method = "loess", se = FALSE, color = "black", linewidth = 0.7, alpha = 0.8) +
+  scale_x_continuous(
+    name = "Day of Year",
+    breaks = c(1, 91, 182, 274, 365),
+    labels = c("Jan", "Apr", "Jul", "Oct", "Dec")
+  ) +
+  labs(
+    title = "Daily Maximum Temperatures in Santa Barbara (2017–2025)",
+    subtitle = "Black trend line shows smoothed average across all years",
+    y = "Max Temperature (°F)"
+  ) +
+  theme_minimal(base_size = 13)
+```
+
+
+
+This plot shows daily maximum temperatures in Santa Barbara over the year, with colors representing years to visually explore if recent years tend to have higher temperatures. In fact, daily maximmum temperatures seem to be decreasing over the years!
+
+
+```{r}
+sb_daily_viz <- sb_daily %>%
+  mutate(
+    year = lubridate::year(date),
+    doy = lubridate::yday(date)
+  ) %>%
+  filter(year < 2025)
+
+annual_avg <- sb_daily %>%
+  mutate(year = lubridate::year(date)) %>%
+  group_by(year) %>%
+  summarise(avg_max = mean(max_temp, na.rm = TRUE))
+
+ggplot(annual_avg, aes(x = year, y = avg_max)) +
+  geom_line(color = "red", linewidth = 1) +
+  geom_point(color = "red", size = 2) +
+  labs(
+    title = "Annual Average Maximum Temperature in Santa Barbara",
+    y = "Avg Max Temperature (°F)",
+    x = "Year"
+  ) +
+  theme_minimal(base_size = 13)
+
+```
+
+
+
+
